@@ -7,7 +7,7 @@ class Component extends DCLogic {
     const data = AIM.bookings().filter((b) => b.userId === me.id && b.status !== 'returned' && b.status !== 'rejected').sort((a, b) => b.createdAt - a.createdAt).map((b) => {
       const ds = b.dates.slice().sort(), last = ds[ds.length - 1];
       const done = b.status === 'paid' && last < TODAY;
-      return { bid: b.id, id: b.stall, zone: AIM.zoneOfStall(b.stall), from: AIM.dateLabel(ds[0]), to: AIM.dateLabel(last), days: ds.length, code: b.code, extra: AIM.extrasText(b),
+      return { bid: b.id, id: b.stall, zone: AIM.zoneOfStall(b.stall), from: AIM.dateLabel(ds[0]), to: AIM.dateLabel(last), days: ds.length, code: b.code, extra: AIM.extrasText(b), total: AIM.money(AIM.priceOf(b).total),
         status: done ? 'done' : (b.status === 'paid' ? 'paid' : 'pending'), raw: b.status, tone: done ? '#9A98A6' : (b.stall.charAt(0) === 'C' ? '#5B3FD6' : '#E0661A') };
     });
     const rows = data.map((d) => Object.assign({}, d, {

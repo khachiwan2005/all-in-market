@@ -6,7 +6,7 @@ class Component extends DCLogic {
     const days = AIM.marketDays();
     // วันที่แสดงผัง: วันนี้ถ้าเป็นวันตลาด ไม่เช่นนั้นวันตลาดถัดไป
     const t = new Date(), wd = t.getDay();
-    const dayKey = (wd === 0 || wd === 6) ? TODAY : (days[0] || {}).key;
+    const dayKey = TODAY;
     const lay = AIM.getLayout();
     const book = AIM.bookings().filter((b) => dayKey && b.dates.indexOf(dayKey) !== -1);
     const stateOf = (id) => {
@@ -26,7 +26,10 @@ class Component extends DCLogic {
     const slips = AIM.bookings().filter((b) => b.status === 'review').sort((a, b) => a.createdAt - b.createdAt).slice(0, 5).map((b) => ({ stall: b.stall, name: nameOf(b.userId), code: b.code, dates: AIM.datesText(b) }));
     const bkOf = (id) => AIM.bookingById(id);
     const refs = AIM.refunds().filter((r) => r.status === 'pending').slice(0, 3).map((r) => { const b = bkOf(r.bookingId) || { stall: '-', userId: '', dates: [] }; return { stall: b.stall, name: nameOf(b.userId), reason: r.reason, dates: AIM.datesText(b) }; });
+    const ym = TODAY.slice(0, 7);
+    const revenue = AIM.bookings().filter((b) => b.status === 'paid' && b.paidAt && AIM.iso(new Date(b.paidAt).getFullYear(), new Date(b.paidAt).getMonth(), 1).slice(0, 7) === ym).reduce((a, b) => a + AIM.priceOf(b).total, 0);
     return Object.assign({}, nav, {
+      revenue: '฿' + AIM.money(revenue),
       dayLabel: dayKey ? AIM.dateFull(dayKey) : 'ยังไม่มีวันตลาด',
       freeNow: freeNow, total: all.length, shutCount: all.filter((id) => stateOf(id) === 'shut').length,
       nPending: nav.navPending, nRefunds: nav.navRefunds,

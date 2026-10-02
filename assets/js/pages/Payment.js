@@ -6,7 +6,8 @@ class Component extends DCLogic {
     const has = !!st.slipData || !!(bk && bk.slip);
     const slipName = st.slipName || (bk && bk.slip && bk.slip.name) || '';
     const ds = bk ? bk.dates.slice().sort() : [];
-    const extraRows = bk ? [['elec', 'ไฟฟ้า'], ['water', 'น้ำประปา'], ['tent', 'โต๊ะและเต็นท์']].filter((x) => bk.extras && bk.extras[x[0]]).map((x) => ({ name: x[1] })) : [];
+    const pr = AIM.priceOf(bk || { dates: [], mode: 'day', extras: {} });
+    const extraRows = bk ? [['elec', 'ไฟฟ้า'], ['water', 'น้ำประปา'], ['tent', 'โต๊ะและเต็นท์']].filter((x) => bk.extras && bk.extras[x[0]]).map((x) => ({ name: x[1], price: AIM.money(pr[x[0]]) })) : [];
     // ย่อรูปสลิปให้เล็กลงก่อนเก็บ (เก็บในเบราว์เซอร์)
     const picked = (e) => {
       const f = e.target.files && e.target.files[0];
@@ -37,7 +38,7 @@ class Component extends DCLogic {
       picked: picked, submit: submit,
       hint: !bk ? 'ยังไม่มีรายการจอง · กลับไปเลือกล็อกก่อน' : (st.err || 'แนบสลิปก่อนยืนยัน'),
       extraRows: extraRows,
-      b: bk ? { stall: bk.stall, zone: AIM.zoneOfStall(bk.stall), datesText: AIM.datesText(bk), days: ds.length } : { stall: '-', zone: '', datesText: 'ยังไม่ได้เลือกล็อก', days: 0 }
+      b: bk ? { stall: bk.stall, zone: AIM.zoneOfStall(bk.stall), datesText: AIM.datesText(bk), days: ds.length, stallPrice: AIM.money(pr.stall), total: AIM.money(pr.total) } : { stall: '-', zone: '', datesText: 'ยังไม่ได้เลือกล็อก', days: 0, stallPrice: '0', total: '0' }
     };
   }
 }

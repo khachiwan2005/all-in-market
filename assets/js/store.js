@@ -52,7 +52,7 @@
   function hash(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return 'h' + (h >>> 0).toString(36); }
   function parseKey(k) { var p = k.split('-'); return { y: +p[0], m: +p[1] - 1, d: +p[2] }; }
 
-  // ---------- วันตลาด (เสาร์-อาทิตย์) ----------
+  // ---------- วันตลาด (เปิดทุกวัน) ----------
   function months(n) {
     var out = [], t = new Date();
     for (var i = 0; i < (n || 6); i++) {
@@ -60,7 +60,7 @@
       var dim = new Date(y, m + 1, 0).getDate(), dates = [];
       for (var d = 1; d <= dim; d++) {
         var wd = new Date(y, m, d).getDay();
-        if (wd === 0 || wd === 6) dates.push({ d: d, wd: wd, key: iso(y, m, d) });
+        dates.push({ d: d, wd: wd, key: iso(y, m, d) });
       }
       out.push({ key: y + '-' + pad(m + 1), y: y, m: m, label: MS[m] + ' ' + (y + 543), full: MF[m] + ' ' + (y + 543), dates: dates });
     }
@@ -78,7 +78,7 @@
   function datesText(b) {
     var ds = (b.dates || []).slice().sort();
     if (!ds.length) return '-';
-    if (b.mode === 'pkg') { var p0 = parseKey(ds[0]); return 'แพ็กเกจ ' + MS[p0.m] + ' ' + (p0.y + 543) + ' (' + ds.length + ' วัน)'; }
+    if (b.mode === 'pkg') { var p0 = parseKey(ds[0]); return 'แพ็กเกจ ' + MS[p0.m] + ' ' + (p0.y + 543); }
     if (ds.length === 1) return dateLabel(ds[0]);
     var a = parseKey(ds[0]), z = parseKey(ds[ds.length - 1]);
     if (a.m === z.m && a.y === z.y) return ds.map(function (k) { return parseKey(k).d; }).join(', ') + ' ' + MS[a.m] + ' ' + (a.y + 543);
@@ -228,6 +228,17 @@
     });
     return out;
   }
+
+  // ---------- ราคา (แก้ตัวเลขได้ที่นี่) ----------
+  var PRICES = { day: 200, month: 5000, water: 10, elec: 20, tent: 100, size: '2×2 ม.' };
+  function money(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  // คิดราคาของการจอง: ค่าล็อก (รายวัน x จำนวนวัน หรือแพ็กเกจรายเดือน) + บริการเสริมคิดต่อวันที่จอง
+  function priceOf(b) {
+    var days = (b.dates || []).length, pkg = b.mode === 'pkg', ex = b.extras || {};
+    var stall = pkg ? PRICES.month : PRICES.day * days;
+    var e = ex.elec ? PRICES.elec * days : 0, w = ex.water ? PRICES.water * days : 0, t = ex.tent ? PRICES.tent * days : 0;
+    return { days: days, stall: stall, elec: e, water: w, tent: t, extra: e + w + t, total: stall + e + w + t, alt: PRICES.day * days };
+  }
   // ---------- สรุปสำหรับเมนูแอดมิน ----------
   function adminNav() {
     var db = load();
@@ -276,6 +287,6 @@
     user: user, register: register, pendingUser: pendingUser, verifyPending: verifyPending, login: login, logout: logout,
     adminLogin: adminLogin, isAdmin: isAdmin, setBanned: setBanned, resetPassword: resetPassword, users: function () { return load().users.slice(); },
     refunds: refunds, requestReturn: requestReturn, setRefundStatus: setRefundStatus,
-    getLayout: getLayout, setLayout: setLayout, adminNav: adminNav, mapCells: mapCells, requireAdmin: requireAdmin, requireUser: requireUser, resetAll: resetAll
+    getLayout: getLayout, setLayout: setLayout, adminNav: adminNav, mapCells: mapCells, PRICES: PRICES, money: money, priceOf: priceOf, requireAdmin: requireAdmin, requireUser: requireUser, resetAll: resetAll
   };
 })();

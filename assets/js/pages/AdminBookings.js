@@ -9,7 +9,7 @@ class Component extends DCLogic {
     const base = AIM.bookings().filter((b) => MAP[b.status]).sort((a, b) => b.createdAt - a.createdAt).map((b) => {
       const ow = AIM.userById(b.userId) || {};
       const ds = b.dates.slice().sort();
-      return { bid: b.id, code: b.code, name: ow.name ? ow.name + ' ' + ow.surname : '-', shop: ow.shop || '-', stall: b.stall, dates: AIM.datesText(b), extra: AIM.extrasText(b),
+      return { bid: b.id, code: b.code, name: ow.name ? ow.name + ' ' + ow.surname : '-', shop: ow.shop || '-', stall: b.stall, dates: AIM.datesText(b), extra: AIM.extrasText(b), stallPrice: AIM.money(AIM.priceOf(b).stall), total: AIM.money(AIM.priceOf(b).total),
         tone: b.stall.charAt(0) === 'C' ? '#5B3FD6' : '#E0661A', s: MAP[b.status], img: (b.slip && b.slip.img) || '', hasImg: !!(b.slip && b.slip.img), noImg: !(b.slip && b.slip.img), slipAt: fmtAt(b.slip && b.slip.at) };
     });
     const list = tab === 'all' ? base : base.filter((b) => b.s === tab);

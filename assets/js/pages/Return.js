@@ -9,7 +9,7 @@ class Component extends DCLogic {
     const idsC = AIM.stallsOfZone(lay.zones.find((z) => z.p === 'C') || { p: 'C', last: 0 }, lay.removed), idsF = AIM.stallsOfZone(lay.zones.find((z) => z.p === 'F') || { p: 'F', last: 0 }, lay.removed);
     // การจองของผู้ใช้ที่ยังคืนได้ (ยังไม่ถึงวันขาย)
     const mineLeft = AIM.bookings().filter((b) => b.userId === me.id && ['pending', 'review', 'paid'].indexOf(b.status) !== -1 && b.dates.slice().sort()[0] > TODAY)
-      .map((b) => ({ bid: b.id, id: b.stall, zone: AIM.zoneOfStall(b.stall), date: AIM.datesText(b), extra: AIM.extrasText(b), price: '[ราคา] บาท', tone: b.stall.charAt(0) === 'C' ? '#5B3FD6' : '#E0661A', first: b.dates.slice().sort()[0], dates: b.dates }));
+      .map((b) => ({ bid: b.id, id: b.stall, zone: AIM.zoneOfStall(b.stall), date: AIM.datesText(b), extra: AIM.extrasText(b), price: AIM.money(AIM.priceOf(b).total) + ' บาท', stallPrice: AIM.money(AIM.priceOf(b).stall), extraPrice: AIM.money(AIM.priceOf(b).extra), tone: b.stall.charAt(0) === 'C' ? '#5B3FD6' : '#E0661A', first: b.dates.slice().sort()[0], dates: b.dates }));
     let want = st.sel;
     try { const q = new URLSearchParams(location.search).get('b'); if (!want && q) want = q; } catch (x) { /* ignore */ }
     const cur = mineLeft.find((d) => d.bid === want) || mineLeft[0] || null;
@@ -36,7 +36,7 @@ class Component extends DCLogic {
     const reasons = ['ติดธุระ ไปขายไม่ได้', 'สภาพอากาศไม่เอื้ออำนวย', 'ต้องการเปลี่ยนวันขาย', 'สินค้าไม่พร้อม', 'อื่น ๆ'].map((label) => ({ label: label, on: label === reason, off: label !== reason, pick: () => this.setState({ reason: label }) }));
     return {
       zoneC: zoneC, zoneF: zoneF, freeCount: freeCount, bookings: bookings, reasons: reasons,
-      cur: cur || { id: '-', date: '-' }, curReason: reason, lastId: lastId,
+      cur: cur || { id: '-', date: '-', stallPrice: '0', extraPrice: '0' }, curReason: reason, lastId: lastId,
       done: done, notDone: !done, hasMore: mineLeft.length > 0,
       showMain: !done && mineLeft.length > 0, showEmpty: !done && mineLeft.length === 0,
       confirm: () => {

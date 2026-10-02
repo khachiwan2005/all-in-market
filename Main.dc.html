@@ -130,7 +130,7 @@
 <div style="display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; align-items: center; gap: 12px">
 <span style="height: 32px; padding: 0 14px; display: flex; align-items: center; border-radius: 999px; background: #EDE8FF; color: #4A31C4; font-weight: 700; font-size: 15px">โซน C</span>
-<span style="font-size: 15px; color: #5A5768">ล็อกในร่ม · [ขนาดล็อก] · [ราคา] บาท/วัน</span>
+<span style="font-size: 15px; color: #5A5768">ล็อกในร่ม · 2×2 ม. · 200 บาท/วัน</span>
 </div>
 <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px">
 <sc-for list="{{zoneC}}" as="s" hint-placeholder-count="16">
@@ -150,7 +150,7 @@
 <div style="display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; align-items: center; gap: 12px">
 <span style="height: 32px; padding: 0 14px; display: flex; align-items: center; border-radius: 999px; background: #FFEBDD; color: #A2430C; font-weight: 700; font-size: 15px">โซน F</span>
-<span style="font-size: 15px; color: #5A5768">ล็อกริมทางเดิน · [ขนาดล็อก] · [ราคา] บาท/วัน</span>
+<span style="font-size: 15px; color: #5A5768">ล็อกริมทางเดิน · 2×2 ม. · 200 บาท/วัน</span>
 </div>
 <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px">
 <sc-for list="{{zoneF}}" as="s" hint-placeholder-count="8">
@@ -178,10 +178,10 @@
 </div>
 </div>
 <div style="display: flex; flex-direction: column; gap: 12px; font-size: 16px">
-<div style="display: flex; justify-content: space-between"><span style="color: #D9D2F8">ค่าล็อก</span><span>[ราคา] บาท</span></div>
-<div style="display: flex; justify-content: space-between; color: #ffffff"><span style="color: #D9D2F8">บริการเสริม</span><span>[ราคา] บาท</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #D9D2F8">ค่าล็อก</span><span>200 บาท/วัน</span></div>
+<div style="display: flex; justify-content: space-between; color: #ffffff"><span style="color: #D9D2F8">บริการเสริม</span><span>เลือกในขั้นถัดไป</span></div>
 <div style="height: 1px; background: #6A52D0"></div>
-<div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700"><span>รวม</span><span>[ยอดรวม] บาท</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700"><span>รวม</span><span>200 บาท</span></div>
 </div>
 <a href="Login.dc.html" style="height: 60px; border-radius: 999px; background: #C8F2D6; color: #0E3D24; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px">ยืนยันและชำระเงิน</a>
 <span style="font-size: 13px; line-height: 1.6; color: #C9BFF2">ล็อกจะถูกกันไว้ให้คุณ [จำนวน] นาทีระหว่างชำระเงิน</span>
@@ -200,19 +200,19 @@
 <div style="width: 56px; height: 56px; border-radius: 16px; background: #FFEBDD; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" sc-camel-view-box="0 0 24 24" fill="none" stroke="#A2430C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"></path></svg></div>
 <h3 style="margin: 0; font-size: 24px; font-weight: 700">ไฟฟ้า</h3>
 <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #5A5768">ปลั๊กพ่วงประจำล็อก สำหรับไฟส่องสว่างและอุปกรณ์ไฟฟ้า</p>
-<span style="font-weight: 700; font-size: 18px">[ราคา] บาท/วัน</span>
+<span style="font-weight: 700; font-size: 18px">20 บาท/วัน (เหมาจ่าย)</span>
 </div>
 <div style="border-radius: 28px; background: #FFFFFF; border: 1px solid #DDD6F3; padding: 32px; display: flex; flex-direction: column; gap: 16px">
 <div style="width: 56px; height: 56px; border-radius: 16px; background: #E3F1FF; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" sc-camel-view-box="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.7s-6 6.6-6 11.3a6 6 0 0 0 12 0c0-4.7-6-11.3-6-11.3z"></path></svg></div>
 <h3 style="margin: 0; font-size: 24px; font-weight: 700">น้ำประปา</h3>
 <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #5A5768">จุดต่อน้ำใกล้ล็อก เหมาะกับร้านอาหารและเครื่องดื่ม</p>
-<span style="font-weight: 700; font-size: 18px">[ราคา] บาท/วัน</span>
+<span style="font-weight: 700; font-size: 18px">10 บาท/วัน</span>
 </div>
 <div style="border-radius: 28px; background: #FFFFFF; border: 1px solid #DDD6F3; padding: 32px; display: flex; flex-direction: column; gap: 16px">
 <div style="width: 56px; height: 56px; border-radius: 16px; background: #EDE8FF; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" sc-camel-view-box="0 0 24 24" fill="none" stroke="#4A31C4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-6 9 6"></path><path d="M3 10h18"></path><path d="M6 10v10"></path><path d="M18 10v10"></path><path d="M4 16h16"></path></svg></div>
 <h3 style="margin: 0; font-size: 24px; font-weight: 700">โต๊ะและเต็นท์</h3>
 <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #5A5768">เช่าอุปกรณ์ตั้งร้านได้ ไม่ต้องขนมาเอง</p>
-<span style="font-weight: 700; font-size: 18px">[ราคา] บาท/วัน</span>
+<span style="font-weight: 700; font-size: 18px">100 บาท/วัน</span>
 </div>
 </div>
 </section>

@@ -7,7 +7,7 @@ class Component extends DCLogic {
     const base = AIM.refunds().sort((a, b) => b.createdAt - a.createdAt).map((r) => {
       const b = AIM.bookingById(r.bookingId) || { stall: '-', userId: '', dates: [] };
       const ow = AIM.userById(b.userId) || {};
-      return { rid: r.id, code: b.code || '-', name: ow.name ? ow.name + ' ' + ow.surname : '-', stall: b.stall, dates: AIM.datesText(b), asked: fmtD(r.createdAt), reason: r.reason, note: r.note || '-', tone: b.stall && b.stall.charAt(0) === 'C' ? '#5B3FD6' : '#E0661A', late: !!r.late, s: r.status };
+      return { rid: r.id, code: b.code || '-', name: ow.name ? ow.name + ' ' + ow.surname : '-', stall: b.stall, dates: AIM.datesText(b), asked: fmtD(r.createdAt), reason: r.reason, note: r.note || '-', total: AIM.money(b.dates && b.dates.length ? AIM.priceOf(b).total : 0), tone: b.stall && b.stall.charAt(0) === 'C' ? '#5B3FD6' : '#E0661A', late: !!r.late, s: r.status };
     });
     const deco = (b) => Object.assign({}, b, { pending: b.s === 'pending', approved: b.s === 'approved', rejected: b.s === 'rejected', inRule: !b.late, late: b.late });
     const list = tab === 'all' ? base : base.filter((b) => b.s === tab);

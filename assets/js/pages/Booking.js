@@ -14,7 +14,7 @@ class Component extends DCLogic {
     const pkg = mode === 'pkg';
     const marketDays = []; MONTHS.forEach((mo) => mo.dates.forEach((x) => marketDays.push({ key: x.key, y: mo.y, m: mo.m, d: x.d, wd: x.wd })));
     if (!MONTHS.length) {
-      return { accent: this.props.accent ?? '#5B3FD6', dayMode: true, pkgMode: false, toPkg: () => {}, toDay: () => {}, days: [], dayFull: 'ยังไม่เปิดให้จอง', months: [], allMonths: [], monthFull: '', pkgDates: [], pkgCount: 0, gridTitle: 'ยังไม่มีวันตลาดที่เปิดให้จอง', priceLabel: 'ค่าล็อก', priceVal: '[ราคา] บาท', calOpen: false, monOpen: false, listOpen: false, openList: () => {}, bookedList: [], noneBooked: true, listTypeHead: 'การจอง', bookedC: 0, bookedF: 0, openCal: () => {}, openMonths: () => {}, closeAll: () => {}, calTitle: '', calCells: [], lastOpen: '-', canPrev: false, noPrev: true, canNext: false, noNext: true, calPrev: () => {}, calNext: () => {}, zoneC: [], zoneF: [], mapCells: [], sel: '', selZone: '', hasSel: false, noSel: true, freeC: 0, freeF: 0, freeCount: 0, bookedCount: 0, totalAll: TOTAL, totalC: idsC.length, totalF: idsF.length, justBooked: '', hasJust: false, hasErr: false, errMsg: '', loggedIn: !!AIM.user(), guest: !AIM.user(), showLogin: false, askLogin: () => {}, closeLogin: () => {}, confirm: () => {} };
+      return { accent: this.props.accent ?? '#5B3FD6', dayMode: true, pkgMode: false, toPkg: () => {}, toDay: () => {}, days: [], dayFull: 'ยังไม่เปิดให้จอง', months: [], allMonths: [], monthFull: '', pkgDates: [], pkgCount: 0, gridTitle: 'ยังไม่มีวันตลาดที่เปิดให้จอง', priceLabel: 'ค่าล็อก', priceVal: '-', pkgSaveText: '', dailyAlt: '0', saveAmt: '0', subTotal: '0', calOpen: false, monOpen: false, listOpen: false, openList: () => {}, bookedList: [], noneBooked: true, listTypeHead: 'การจอง', bookedC: 0, bookedF: 0, openCal: () => {}, openMonths: () => {}, closeAll: () => {}, calTitle: '', calCells: [], lastOpen: '-', canPrev: false, noPrev: true, canNext: false, noNext: true, calPrev: () => {}, calNext: () => {}, zoneC: [], zoneF: [], mapCells: [], sel: '', selZone: '', hasSel: false, noSel: true, freeC: 0, freeF: 0, freeCount: 0, bookedCount: 0, totalAll: TOTAL, totalC: idsC.length, totalF: idsF.length, justBooked: '', hasJust: false, hasErr: false, errMsg: '', loggedIn: !!AIM.user(), guest: !AIM.user(), showLogin: false, askLogin: () => {}, closeLogin: () => {}, confirm: () => {} };
     }
     const month = MONTHS.find((m) => m.key === st.month) || MONTHS[0];
     const dayKey = st.day;
@@ -53,7 +53,7 @@ class Component extends DCLogic {
     const calCells = [];
     for (let i = 0; i < lead; i++) calCells.push({ blank: true });
     for (let n = 1; n <= dim; n++) {
-      const key = AIM.iso(cm.y, cm.m, n), wd = new Date(cm.y, cm.m, n).getDay(), isMarket = wd === 0 || wd === 6;
+      const key = AIM.iso(cm.y, cm.m, n), wd = new Date(cm.y, cm.m, n).getDay(), isMarket = true;
       const isPast = key <= TODAY;
       const free = isMarket && !isPast ? freeOn(key) : 0;
       const chosen = key === dObj.key;
@@ -91,7 +91,10 @@ class Component extends DCLogic {
       monthFull: month.full, pkgDates: month.dates.map((x) => ({ label: AIM.WS[x.wd] + ' ' + x.d })), pkgCount: month.dates.length,
       gridTitle: pkg ? 'เลือกล็อกที่ว่างครบทั้งเดือน' : 'แตะล็อกสีเขียวเพื่อเลือก',
       priceLabel: pkg ? 'แพ็กเกจรายเดือน (' + month.dates.length + ' วัน)' : 'ค่าล็อก',
-      priceVal: pkg ? '[ราคาแพ็กเกจ] บาท' : '[ราคา] บาท',
+      priceVal: pkg ? AIM.money(AIM.PRICES.month) + ' บาท/เดือน' : AIM.money(AIM.PRICES.day) + ' บาท/วัน',
+      pkgSaveText: (AIM.PRICES.day * month.dates.length - AIM.PRICES.month) > 0 ? 'ประหยัด ' + AIM.money(AIM.PRICES.day * month.dates.length - AIM.PRICES.month) + ' บาท' : 'ราคาเหมา ' + AIM.money(AIM.PRICES.month) + ' บาท',
+      dailyAlt: AIM.money(AIM.PRICES.day * month.dates.length), saveAmt: AIM.money(Math.max(0, AIM.PRICES.day * month.dates.length - AIM.PRICES.month)),
+      subTotal: pkg ? AIM.money(AIM.PRICES.month) : AIM.money(AIM.PRICES.day * 1),
       calOpen: !!st.calOpen, monOpen: !!st.monOpen, listOpen: !!st.listOpen,
       openList: () => this.setState({ listOpen: true }),
       bookedList: bookedList, noneBooked: bookedList.length === 0, listTypeHead: pkg ? 'ไม่ว่างกี่วันในเดือน' : 'การจอง',
