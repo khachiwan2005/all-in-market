@@ -1,5 +1,6 @@
 class Component extends DCLogic {
   renderVals() {
+    if (AIM.user()) { location.replace('Profile.dc.html'); }
     const st = this.state || {};
     const submit = (e) => {
       if (e && e.preventDefault) e.preventDefault();

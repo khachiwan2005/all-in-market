@@ -1,5 +1,6 @@
 class Component extends DCLogic {
   renderVals() {
+    if (AIM.user()) { location.replace('Profile.dc.html'); }
     const tab = (this.state && this.state.tab) || 'terms';
     const v = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
     const submit = (e) => {

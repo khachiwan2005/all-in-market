@@ -253,7 +253,11 @@
       } else if (a.getAttribute('href') === 'Profile.dc.html' && t.indexOf('บัญชีของฉัน') !== -1 && !u) {
         /* หน้า Profile เอง: ไม่ต้องแก้ */
       }
-      if (t === 'ออกจากระบบ' && !a.__aim) { a.__aim = 1; a.addEventListener('click', function () { logout(); }); }
+      // ล็อกอินแล้ว: ปุ่ม "เข้าสู่ระบบ" ในส่วนหัวเปลี่ยนเป็นลิงก์ไปบัญชีของฉัน / ปุ่มชำระเงินบนหน้าแรกไปหน้าจอง
+      if (u && a.getAttribute('href') === 'Login.dc.html') {
+        if (t === 'เข้าสู่ระบบ' && a.closest('header') && a.firstChild && a.firstChild.nodeType === 3) { a.setAttribute('href', 'Profile.dc.html'); a.firstChild.nodeValue = 'บัญชีของฉัน'; }
+        else if (t === 'ยืนยันและชำระเงิน') a.setAttribute('href', 'Booking.dc.html');
+      }      if (t === 'ออกจากระบบ' && !a.__aim) { a.__aim = 1; a.addEventListener('click', function () { logout(); }); }
     }
   }
   function startChrome() {
