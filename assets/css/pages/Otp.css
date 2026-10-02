@@ -1,0 +1,5 @@
+body{margin:0;font-family:"Anuphan","Noto Sans Thai",Tahoma,sans-serif;background:#FFFFFF;color:#4A3A96}
+a{color:#4A31C4;text-decoration:none}a:hover{text-decoration:underline}
+input,select,button{font-family:inherit}
+input::placeholder{color:#8C87A3}
+input:focus,select:focus{outline:none;border-color:#5B3FD6;box-shadow:0 0 0 4px #E2DBF6}

@@ -1,0 +1,10 @@
+body{margin:0;font-family:"Anuphan","Noto Sans Thai",Tahoma,sans-serif;background:#FFFFFF;color:#4A3A96}
+a{color:#4A3A96;text-decoration:none}a:hover{color:#4A31C4}
+button{font-family:inherit}
+.hot{position:absolute;width:64px;height:48px;transform:translate(-50%,-50%);border-radius:14px;display:block}
+.hot-free{cursor:pointer}.hot-booked{cursor:not-allowed}
+.hot-free:hover,.hot-free:focus-visible{background:rgba(200,242,214,.35);box-shadow:0 0 0 3px rgba(31,122,69,.55);outline:none}
+.hot .pop{position:absolute;left:50%;bottom:78%;display:flex;flex-direction:column;align-items:center;opacity:0;transform:translate(-50%,12px) scale(.4);transform-origin:50% 100%;pointer-events:none;z-index:2}
+.hot:hover .pop,.hot:focus-visible .pop{animation:popIn .6s cubic-bezier(.3,1.6,.5,1) forwards}
+@keyframes popIn{0%{opacity:0;transform:translate(-50%,12px) scale(.4)}55%{opacity:1;transform:translate(-50%,-10px) scale(1.08)}75%{transform:translate(-50%,2px) scale(.98)}100%{opacity:1;transform:translate(-50%,0) scale(1)}}
+@media (prefers-reduced-motion:reduce){.hot:hover .pop,.hot:focus-visible .pop{animation:none;opacity:1;transform:translate(-50%,0)}}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="th"><head>
+<meta charset="utf-8">
+<title>All IN Market — บัญชีของฉัน</title>
+<script src="assets/js/dc-runtime.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/pages/Profile.css">
+</helmet>
+<div style="width: 1440px; height: 1760px; box-sizing: border-box; background: #FFFFFF; color: #4A3A96; font-family: 'Anuphan','Noto Sans Thai',Tahoma,sans-serif; display: flex; flex-direction: column">
+<header style="height: 79px; box-sizing: border-box; padding: 0 80px; display: flex; align-items: center; justify-content: space-between">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px">
+<div style="width: 44px; height: 44px; border-radius: 12px; background: #4A3A96; display: flex; align-items: center; justify-content: center">
+<svg width="26" height="26" sc-camel-view-box="0 0 24 24" fill="none" stroke="#C8F2D6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9"></path><path d="M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"></path><path d="M5 14v6h14v-6"></path></svg>
+</div>
+<span style="font-family: 'Bricolage Grotesque',sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.5px">All <span style="color: #E0661A">IN</span> Market</span>
+</a>
+<nav style="display: flex; gap: 36px; font-size: 16px; font-weight: 500">
+<a href="Booking.dc.html">แผนผังตลาด</a>
+<a href="HowTo.dc.html">วิธีจอง</a>
+<a href="Addons.dc.html">บริการเสริม</a>
+<a href="Return.dc.html">คืนล็อก</a>
+<a href="Contact.dc.html">ติดต่อเรา</a>
+</nav><div style="display: flex; gap: 12px; align-items: center">
+<a href="Booking.dc.html" style="height: 48px; padding: 0 24px; display: flex; align-items: center; border-radius: 999px; background: #4A3A96; color: #FFFFFF; font-weight: 600; font-size: 15px">จองล็อกเลย</a>
+<a href="Profile.dc.html" aria-current="page" style="height: 48px; padding: 0 16px 0 6px; display: flex; align-items: center; gap: 10px; border-radius: 999px; background: #F1EDFC; font-weight: 600; font-size: 15px"><span style="width: 36px; height: 36px; border-radius: 999px; background: #E0661A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px">ก</span>บัญชีของฉัน</a>
+</div>
+
+</header>
+<section style="padding: 40px 80px 48px; background: #F1EDFC; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; align-items: center; gap: 28px">
+<div style="width: 112px; height: 112px; flex-shrink: 0; border-radius: 999px; background: #E0661A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; box-shadow: 0 0 0 6px #FFFFFF">ก</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 700; color: #5B3FD6; letter-spacing: 1px">บัญชีของฉัน</span>
+<h1 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 700">[ชื่อ นามสกุล]</h1>
+<div style="display: flex; gap: 20px; font-size: 16px; color: #5A5768"><span>ร้าน [ชื่อร้าน]</span><span>· [ประเภทสินค้า]</span><span>· [เบอร์โทร]</span></div>
+</div>
+<div style="display: flex; gap: 12px">
+<a href="#edit" style="height: 48px; padding: 0 22px; display: flex; align-items: center; border-radius: 999px; background: #FFFFFF; border: 1.5px solid #DDD6F3; font-weight: 600; font-size: 15px">แก้ไขข้อมูล</a>
+<a href="Main.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; border-radius: 999px; color: #A2430C; font-weight: 600; font-size: 15px">ออกจากระบบ</a>
+</div>
+</div>
+<div style="display: flex; gap: 16px">
+<div style="flex-grow: 1; flex-basis: 0; border-radius: 22px; background: #FFFFFF; padding: 20px 24px; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Bricolage Grotesque',sans-serif; font-weight: 800; font-size: 36px; color: #4A3A96">{{n_all}}</span><span style="font-size: 15px; color: #5A5768">การจองทั้งหมด</span></div>
+<div style="flex-grow: 1; flex-basis: 0; border-radius: 22px; background: #FFFFFF; padding: 20px 24px; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Bricolage Grotesque',sans-serif; font-weight: 800; font-size: 36px; color: #C4531A">{{n_pending}}</span><span style="font-size: 15px; color: #5A5768">รอชำระเงิน</span></div>
+<div style="flex-grow: 1; flex-basis: 0; border-radius: 22px; background: #FFFFFF; padding: 20px 24px; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Bricolage Grotesque',sans-serif; font-weight: 800; font-size: 36px; color: #1F7A45">{{n_paid}}</span><span style="font-size: 15px; color: #5A5768">ชำระแล้ว</span></div>
+<div style="flex-grow: 1; flex-basis: 0; border-radius: 22px; background: #FFFFFF; padding: 20px 24px; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Bricolage Grotesque',sans-serif; font-weight: 800; font-size: 36px; color: #5A5768">{{n_done}}</span><span style="font-size: 15px; color: #5A5768">ขายเสร็จแล้ว</span></div>
+</div>
+</section>
+<section style="flex-grow: 1; padding: 44px 80px 80px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<h2 style="margin: 0; font-size: 32px; font-weight: 700">การจองของฉัน</h2>
+<div style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: #F1EDFC">
+<sc-if value="{{t_all}}" hint-placeholder-val="{{true}}"><button type="button" aria-pressed="true" style="height: 44px; padding: 0 20px; border-radius: 999px; border: none; background: #4A3A96; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">ทั้งหมด · {{n_all}}</button></sc-if>
+<sc-if value="{{f_all}}" hint-placeholder-val="{{false}}"><button type="button" sc-camel-on-click="{{go_all}}" style="height: 44px; padding: 0 20px; border-radius: 999px; border: none; background: transparent; color: #4A3A96; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer">ทั้งหมด · {{n_all}}</button></sc-if>
+<sc-if value="{{t_pending}}" hint-placeholder-val="{{false}}"><button type="button" aria-pressed="true" style="height: 44px; padding: 0 20px; border-radius: 999px; border: none; background: #4A3A96; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">รอชำระเงิน · {{n_pending}}</button></sc-if>
+<sc-if value="{{f_pending}}" hint-placeholder-val="{{true}}"><button type="button" sc-camel-on-click="{{go_pending}}" style="height: 44px; padding: 0 20px; border-radius: 999px; border: none; background: transparent; color: #4A3A96; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer">รอชำระเงิน · {{n_pending}}</button></sc-if>
+<sc-if value="{{t_paid}}" hint-placeholder-val="{{false}}"><button type="button" aria-pressed="true" style="height: 44px; padding: 0 20px; border-radius: 999px; border: none; background: #4A3A96; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">ชำระแล้ว · {{n_paid}}</button></sc-if>
+<sc-if value="{{f_paid}}" hint-placeholder-val="{{true}}"><button type="button" sc-camel-on-click="{{go_paid}}" style="height: 44px; padding: 0 20px; border-radius: 999px; border: none; background: transparent; color: #4A3A96; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer">ชำระแล้ว · {{n_paid}}</button></sc-if>
+<sc-if value="{{t_done}}" hint-placeholder-val="{{false}}"><button type="button" aria-pressed="true" style="height: 44px; padding: 0 20px; border-radius: 999px; border: none; background: #4A3A96; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">ประวัติ · {{n_done}}</button></sc-if>
+<sc-if value="{{f_done}}" hint-placeholder-val="{{true}}"><button type="button" sc-camel-on-click="{{go_done}}" style="height: 44px; padding: 0 20px; border-radius: 999px; border: none; background: transparent; color: #4A3A96; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer">ประวัติ · {{n_done}}</button></sc-if>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<sc-for list="{{list}}" as="b" hint-placeholder-count="4">
+<div style="border-radius: 28px; border: 1px solid #DDD6F3; background: #FFFFFF; padding: 24px 28px; display: flex; align-items: center; gap: 24px; box-shadow: 0 10px 30px rgba(74,58,150,0.06)">
+<div style="width: 84px; height: 84px; flex-shrink: 0; border-radius: 22px; background: {{b.tone}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque',sans-serif; font-weight: 800; font-size: 28px">{{b.id}}</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="font-size: 22px; font-weight: 700">ล็อก {{b.id}} · {{b.zone}}</span>
+<sc-if value="{{b.paid}}" hint-placeholder-val="{{true}}"><span style="height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #E3F8EA; color: #0E5A34; font-size: 14px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 999px; background: #1F9D55"></span>ชำระแล้ว</span></sc-if>
+<sc-if value="{{b.pending}}" hint-placeholder-val="{{false}}"><span style="height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #FFEBDD; color: #A2430C; font-size: 14px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 999px; background: #E0661A"></span>รอชำระเงิน</span></sc-if>
+<sc-if value="{{b.done}}" hint-placeholder-val="{{false}}"><span style="height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #EDEBF2; color: #5A5768; font-size: 14px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 999px; background: #9A98A6"></span>เสร็จสิ้น</span></sc-if>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; font-size: 16px; color: #45425A"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18"></path><path d="M8 3v4"></path><path d="M16 3v4"></path></svg><span><b>{{b.from}}</b> ถึง <b>{{b.to}}</b> · {{b.days}} วัน</span></div>
+<div style="display: flex; gap: 20px; font-size: 14px; color: #5A5768"><span>รหัสการจอง {{b.code}}</span><span>บริการเสริม: {{b.extra}}</span><span>ยอดชำระ [ราคา] บาท</span></div>
+<sc-if value="{{b.pending}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; font-weight: 600; color: #A2430C">ชำระภายใน [วันเวลา] ไม่เช่นนั้นล็อกจะกลับเป็นว่าง</span></sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; align-items: stretch; width: 190px; flex-shrink: 0">
+<sc-if value="{{b.pending}}" hint-placeholder-val="{{false}}"><a href="Payment.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; background: #5B3FD6; color: #FFFFFF">ชำระเงิน</a></sc-if>
+<sc-if value="{{b.paid}}" hint-placeholder-val="{{true}}"><a href="Ticket.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; background: #F1EDFC; color: #4A3A96">ดูใบจอง</a></sc-if>
+<sc-if value="{{b.active}}" hint-placeholder-val="{{true}}"><a href="Return.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; border: 1.5px solid #E0661A; color: #A2430C"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg>ยกเลิกล็อก</a></sc-if>
+<sc-if value="{{b.done}}" hint-placeholder-val="{{false}}"><a href="Booking.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; background: #F1EDFC; color: #4A3A96">จองล็อกนี้อีกครั้ง</a></sc-if>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{empty}}" hint-placeholder-val="{{false}}"><div style="border-radius: 28px; border: 1.5px dashed #DDD6F3; padding: 48px; text-align: center; font-size: 17px; color: #5A5768">ไม่มีการจองในหมวดนี้</div></sc-if>
+</div>
+<div style="border-radius: 24px; background: #F1EDFC; padding: 22px 28px; display: flex; align-items: center; justify-content: space-between">
+<span style="font-size: 16px; color: #45425A">ต้องการเปลี่ยนวันหรือคืนล็อก? คืนได้ก่อนวันขาย [จำนวน] วัน ตามเงื่อนไขของตลาด</span>
+<a href="Return.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; background: #4A3A96; color: #FFFFFF; font-weight: 700; font-size: 15px"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg>ไปหน้าคืนล็อก</a>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1760}}" src="assets/js/pages/Profile.js"></script>
+
+
+</body></html>
