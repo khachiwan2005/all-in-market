@@ -8,11 +8,11 @@ class Component extends DCLogic {
       const ds = b.dates.slice().sort(), last = ds[ds.length - 1];
       const done = b.status === 'paid' && last < TODAY;
       return { bid: b.id, id: b.stall, zone: AIM.zoneOfStall(b.stall), from: AIM.dateLabel(ds[0]), to: AIM.dateLabel(last), days: ds.length, code: b.code, extra: AIM.extrasText(b), total: AIM.money(AIM.priceOf(b).total),
-        status: done ? 'done' : (b.status === 'paid' ? 'paid' : 'pending'), raw: b.status, tone: done ? '#9A98A6' : (b.stall.charAt(0) === 'C' ? '#5B3FD6' : '#E0661A') };
+        status: done ? 'done' : (b.status === 'paid' ? 'paid' : (b.status === 'returning' ? 'returning' : 'pending')), raw: b.status, tone: done ? '#9A98A6' : (b.stall.charAt(0) === 'C' ? '#5B3FD6' : '#E0661A') };
     });
     const rows = data.map((d) => Object.assign({}, d, {
-      paid: d.status === 'paid', pending: d.status === 'pending' && d.raw === 'pending', review: d.raw === 'review', done: d.status === 'done',
-      hasTicket: d.status === 'paid' || d.raw === 'review', active: d.status !== 'done'
+      paid: d.status === 'paid', pending: d.status === 'pending' && d.raw === 'pending', review: d.raw === 'review', returning: d.status === 'returning', done: d.status === 'done',
+      hasTicket: d.status === 'paid' || d.raw === 'review', active: d.status !== 'done' && d.status !== 'returning'
     }));
     const count = (k) => (k === 'all' ? rows.length : rows.filter((r) => r.status === k).length);
     const list = tab === 'all' ? rows : rows.filter((r) => r.status === tab);

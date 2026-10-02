@@ -17,7 +17,7 @@
   var MF = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
   var WS = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
   var WF = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
-  var BLOCKING = ['pending', 'review', 'paid']; // สถานะที่ถือว่าล็อกถูกจองอยู่
+  var BLOCKING = ['pending', 'review', 'paid', 'returning']; // สถานะที่ถือว่าล็อกถูกจองอยู่
 
   function blank() {
     return {
@@ -199,11 +199,24 @@
       db.seq += 1;
       var firstDay = b.dates.slice().sort()[0];
       var r = { id: 'r' + db.seq, bookingId: b.id, reason: reason, note: note || '', bank: bank || null, status: 'pending', createdAt: Date.now(), late: firstDay <= (function () { var t = new Date(); t.setDate(t.getDate() + 3); return iso(t.getFullYear(), t.getMonth(), t.getDate()); })() };
-      db.refunds.push(r); b.status = 'returned'; b.returnedAt = Date.now();
+      db.refunds.push(r); b.prevStatus = b.status; b.status = 'returning'; b.returnAskedAt = Date.now();
       return { refund: r };
     });
   }
-  function setRefundStatus(id, st) { mutate(function (db) { db.refunds.forEach(function (r) { if (r.id === id) r.status = st; }); }); }
+  // การคืนล็อกสำเร็จเมื่อแอดมินคืนเงินเสร็จ (approved) -> ล็อกว่าง / ถ้าปฏิเสธ -> การจองกลับเป็นสถานะเดิม
+  function setRefundStatus(id, st) {
+    mutate(function (db) {
+      db.refunds.forEach(function (r) {
+        if (r.id !== id) return;
+        r.status = st;
+        db.bookings.forEach(function (b) {
+          if (b.id !== r.bookingId) return;
+          if (st === 'approved') { b.status = 'returned'; b.returnedAt = Date.now(); }
+          else if (st === 'rejected') b.status = b.prevStatus || 'paid';
+        });
+      });
+    });
+  }
 
   // ---------- ผังตลาด (แอดมิน) ----------
   function getLayout() { return load().layout; }

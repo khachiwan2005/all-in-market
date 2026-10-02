@@ -23,10 +23,10 @@ class Component extends DCLogic {
     const myStalls = AIM.bookings().filter((b) => b.userId === me.id && ['pending', 'review', 'paid'].indexOf(b.status) !== -1 && b.dates.indexOf(dateKey) !== -1).map((b) => b.stall);
     let freeCount = 0;
     const cellOf = (id) => {
-      const isMine = myStalls.indexOf(id) !== -1;
-      const isOther = unavailable.indexOf(id) !== -1 && !isMine;
-      const isFresh = id === lastId && done;
-      const isPicked = !!cur && id === cur.id && !done;
+      const isMine = myStalls.indexOf(id) !== -1 && !(done && id === lastId);
+      const isOther = unavailable.indexOf(id) !== -1 && !isMine && !(done && id === lastId);
+      const isFresh = false;
+      const isPicked = (!!cur && id === cur.id && !done) || (done && id === lastId);
       const free = !isMine && !isOther && !isFresh;
       if (free || isFresh) freeCount += 1;
       return { id: id, free: free, taken: isOther, mine: isMine && !isPicked, picked: isPicked, fresh: isFresh };

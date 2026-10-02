@@ -64,7 +64,7 @@ class Component extends DCLogic {
     const datesInScope = pkg ? month.dates.map((x) => x.key) : [dObj.key];
     const rows = {};
     AIM.bookings().forEach((b) => {
-      if (['pending', 'review', 'paid'].indexOf(b.status) === -1) return;
+      if (['pending', 'review', 'paid', 'returning'].indexOf(b.status) === -1) return;
       const hit = b.dates.filter((k) => datesInScope.indexOf(k) !== -1);
       if (!hit.length) return;
       const r = rows[b.stall] || (rows[b.stall] = { days: 0, mine: false, monthly: false, type: '' });

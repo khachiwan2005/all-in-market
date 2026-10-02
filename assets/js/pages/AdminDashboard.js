@@ -11,7 +11,7 @@ class Component extends DCLogic {
     const book = AIM.bookings().filter((b) => dayKey && b.dates.indexOf(dayKey) !== -1);
     const stateOf = (id) => {
       if (lay.shut.indexOf(id) !== -1) return 'shut';
-      const hit = book.filter((b) => b.stall === id && ['pending', 'review', 'paid'].indexOf(b.status) !== -1);
+      const hit = book.filter((b) => b.stall === id && ['pending', 'review', 'paid', 'returning'].indexOf(b.status) !== -1);
       if (!hit.length) return 'free';
       return hit.some((b) => b.status === 'paid') ? 'booked' : 'wait';
     };
