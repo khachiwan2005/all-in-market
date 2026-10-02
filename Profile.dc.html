@@ -2,6 +2,7 @@
 <html lang="th"><head>
 <meta charset="utf-8">
 <title>All IN Market — บัญชีของฉัน</title>
+<script src="assets/js/store.js"></script>
 <script src="assets/js/dc-runtime.js"></script>
 </head>
 <body>
@@ -32,11 +33,11 @@
 </header>
 <section style="padding: 40px 80px 48px; background: #F1EDFC; display: flex; flex-direction: column; gap: 28px">
 <div style="display: flex; align-items: center; gap: 28px">
-<div style="width: 112px; height: 112px; flex-shrink: 0; border-radius: 999px; background: #E0661A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; box-shadow: 0 0 0 6px #FFFFFF">ก</div>
+<div style="width: 112px; height: 112px; flex-shrink: 0; border-radius: 999px; background: #E0661A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; box-shadow: 0 0 0 6px #FFFFFF">{{u.init}}</div>
 <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
 <span style="font-size: 15px; font-weight: 700; color: #5B3FD6; letter-spacing: 1px">บัญชีของฉัน</span>
-<h1 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 700">[ชื่อ นามสกุล]</h1>
-<div style="display: flex; gap: 20px; font-size: 16px; color: #5A5768"><span>ร้าน [ชื่อร้าน]</span><span>· [ประเภทสินค้า]</span><span>· [เบอร์โทร]</span></div>
+<h1 style="margin: 0; font-size: 44px; line-height: 1.15; font-weight: 700">{{u.full}}</h1>
+<div style="display: flex; gap: 20px; font-size: 16px; color: #5A5768"><span>ร้าน {{u.shop}}</span><span>· {{u.type}}</span><span>· {{u.phone}}</span></div>
 </div>
 <div style="display: flex; gap: 12px">
 <a href="#edit" style="height: 48px; padding: 0 22px; display: flex; align-items: center; border-radius: 999px; background: #FFFFFF; border: 1.5px solid #DDD6F3; font-weight: 600; font-size: 15px">แก้ไขข้อมูล</a>
@@ -72,7 +73,7 @@
 <div style="display: flex; align-items: center; gap: 12px">
 <span style="font-size: 22px; font-weight: 700">ล็อก {{b.id}} · {{b.zone}}</span>
 <sc-if value="{{b.paid}}" hint-placeholder-val="{{true}}"><span style="height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #E3F8EA; color: #0E5A34; font-size: 14px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 999px; background: #1F9D55"></span>ชำระแล้ว</span></sc-if>
-<sc-if value="{{b.pending}}" hint-placeholder-val="{{false}}"><span style="height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #FFEBDD; color: #A2430C; font-size: 14px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 999px; background: #E0661A"></span>รอชำระเงิน</span></sc-if>
+<sc-if value="{{b.pending}}" hint-placeholder-val="{{false}}"><span style="height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #FFEBDD; color: #A2430C; font-size: 14px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 999px; background: #E0661A"></span>รอชำระเงิน</span></sc-if><sc-if value="{{b.review}}" hint-placeholder-val="{{false}}"><span style="height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #FFEBDD; color: #A2430C; font-size: 14px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 999px; background: #E0661A"></span>รอตรวจสลิป</span></sc-if>
 <sc-if value="{{b.done}}" hint-placeholder-val="{{false}}"><span style="height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #EDEBF2; color: #5A5768; font-size: 14px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 999px; background: #9A98A6"></span>เสร็จสิ้น</span></sc-if>
 </div>
 <div style="display: flex; align-items: center; gap: 8px; font-size: 16px; color: #45425A"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18"></path><path d="M8 3v4"></path><path d="M16 3v4"></path></svg><span><b>{{b.from}}</b> ถึง <b>{{b.to}}</b> · {{b.days}} วัน</span></div>
@@ -80,8 +81,8 @@
 <sc-if value="{{b.pending}}" hint-placeholder-val="{{false}}"><span style="font-size: 14px; font-weight: 600; color: #A2430C">ชำระภายใน [วันเวลา] ไม่เช่นนั้นล็อกจะกลับเป็นว่าง</span></sc-if>
 </div>
 <div style="display: flex; flex-direction: column; gap: 10px; align-items: stretch; width: 190px; flex-shrink: 0">
-<sc-if value="{{b.pending}}" hint-placeholder-val="{{false}}"><a href="Payment.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; background: #5B3FD6; color: #FFFFFF">ชำระเงิน</a></sc-if>
-<sc-if value="{{b.paid}}" hint-placeholder-val="{{true}}"><a href="Ticket.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; background: #F1EDFC; color: #4A3A96">ดูใบจอง</a></sc-if>
+<sc-if value="{{b.pending}}" hint-placeholder-val="{{false}}"><a href="Payment.dc.html?b={{b.bid}}" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; background: #5B3FD6; color: #FFFFFF">ชำระเงิน</a></sc-if>
+<sc-if value="{{b.hasTicket}}" hint-placeholder-val="{{true}}"><a href="Ticket.dc.html?b={{b.bid}}" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; background: #F1EDFC; color: #4A3A96">ดูใบจอง</a></sc-if>
 <sc-if value="{{b.active}}" hint-placeholder-val="{{true}}"><a href="Return.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; border: 1.5px solid #E0661A; color: #A2430C"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg>ยกเลิกล็อก</a></sc-if>
 <sc-if value="{{b.done}}" hint-placeholder-val="{{false}}"><a href="Booking.dc.html" style="height: 48px; padding: 0 22px; display: flex; align-items: center; gap: 8px; border-radius: 999px; font-weight: 700; font-size: 15px; justify-content: center; background: #F1EDFC; color: #4A3A96">จองล็อกนี้อีกครั้ง</a></sc-if>
 </div>

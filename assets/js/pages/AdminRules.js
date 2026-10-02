@@ -1,3 +1,6 @@
 class Component extends DCLogic {
-  renderVals() { return {}; }
+  renderVals() {
+    if (!AIM.requireAdmin()) return {};
+    return Object.assign({}, AIM.adminNav());
+  }
 }

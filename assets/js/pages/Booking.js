@@ -1,104 +1,94 @@
 class Component extends DCLogic {
   renderVals() {
     const st = this.state || {};
-    const TODAY = '2026-10-01';
-    const MS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-    const MF = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-    const WS = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'], WF = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
-    const pad = (n) => (n < 10 ? '0' + n : '' + n);
-    const iso = (y, m, d) => y + '-' + pad(m + 1) + '-' + pad(d);
-    const ALL = []; for (let i = 1; i <= 16; i++) ALL.push('C' + pad(i)); for (let i = 1; i <= 8; i++) ALL.push('F' + pad(i));
-    const hash = (str) => { let h = 7; for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 100003; return h; };
-    const pickSet = (seed, n) => { const out = []; let h = hash(seed); while (out.length < n) { h = (h * 73 + 19) % 100003; const id = ALL[h % ALL.length]; if (out.indexOf(id) === -1) out.push(id); } return out; };
-    const FIXED = { '2026-10-03': ['C11', 'C13', 'F01', 'F04', 'F06', 'F07'], '2026-10-04': ['C02', 'C05', 'C11', 'F02', 'F03'], '2026-10-10': ['C01', 'C03', 'C12', 'C13', 'C14', 'F05', 'F06', 'F07', 'F08'], '2026-10-17': ALL.slice(), '2026-11-14': ALL.slice() };
-    const othersOn = (key) => FIXED[key] || pickSet(key, 3 + (hash(key) % 12));
-    // months Oct 2026 .. Mar 2027
-    const MONTHS = [];
-    for (let i = 0; i < 6; i++) {
-      const y = 2026 + Math.floor((9 + i) / 12), m = (9 + i) % 12;
-      const dates = [];
-      const dim = new Date(y, m + 1, 0).getDate();
-      for (let d = 1; d <= dim; d++) { const wd = new Date(y, m, d).getDay(); if (wd === 0 || wd === 6) dates.push({ d: d, wd: wd, key: iso(y, m, d) }); }
-      const key = y + '-' + pad(m + 1);
-      const taken = key === '2026-10' ? ['C01', 'C02', 'C03', 'C05', 'C11', 'C12', 'C13', 'C14', 'F01', 'F02', 'F03', 'F04', 'F05', 'F06', 'F07', 'F08'] : (key === '2026-11' ? ['C11', 'C13', 'F01', 'F06'] : pickSet(key, 4 + (hash(key) % 6)));
-      MONTHS.push({ key: key, y: y, m: m, label: MS[m] + ' ' + (y + 543), full: MF[m] + ' ' + (y + 543), dates: dates, taken: taken });
-    }
-    const lastDay = MONTHS[MONTHS.length - 1];
-    const lastOpen = lastDay.dates[lastDay.dates.length - 1].d + ' ' + MS[lastDay.m] + ' ' + (lastDay.y + 543);
+    const pad = AIM.pad, MS = AIM.MS;
+    const TODAY = AIM.todayKey();
+    const lay = AIM.getLayout();
+    const zc = lay.zones.find((z) => z.p === 'C') || { p: 'C', last: 0 }, zf = lay.zones.find((z) => z.p === 'F') || { p: 'F', last: 0 };
+    const idsC = AIM.stallsOfZone(zc, lay.removed), idsF = AIM.stallsOfZone(zf, lay.removed);
+    const ALL = idsC.concat(idsF);
+    const TOTAL = ALL.length;
+    // เดือนที่เปิดจอง (เฉพาะเดือนที่ยังมีวันตลาดในอนาคต)
+    const MONTHS = AIM.months(6).map((m) => Object.assign({}, m, { dates: m.dates.filter((x) => x.key > TODAY) })).filter((m) => m.dates.length > 0);
     const mode = st.mode || 'day';
     const pkg = mode === 'pkg';
-    const month = MONTHS.find((m) => m.key === (st.month || '2026-10')) || MONTHS[0];
-    const mineAll = st.mine || {};
-    const pkgMineFor = (dateKey) => mineAll['pkg-' + dateKey.slice(0, 7)] || [];
-    const marketDays = []; MONTHS.forEach((mo) => mo.dates.forEach((d) => { if (d.key > TODAY) marketDays.push({ key: d.key, y: mo.y, m: mo.m, d: d.d, wd: d.wd }); }));
-    const HOLDERS = { '2026-10': ['C11', 'F06'], '2026-11': ['C11'] };
-    const holdersOf = (mk) => HOLDERS[mk] || pickSet(mk + 'h', 1);
-    const bookedOnDate = (key) => { const set = othersOn(key).concat(mineAll[key] || []).concat(pkgMineFor(key)); holdersOf(key.slice(0, 7)).forEach((id) => { if (set.indexOf(id) === -1) set.push(id); }); return set; };
-    const freeOn = (key) => ALL.filter((id) => bookedOnDate(key).indexOf(id) === -1).length;
-    const dayKey = st.day || '2026-10-03';
+    const marketDays = []; MONTHS.forEach((mo) => mo.dates.forEach((x) => marketDays.push({ key: x.key, y: mo.y, m: mo.m, d: x.d, wd: x.wd })));
+    if (!MONTHS.length) {
+      return { accent: this.props.accent ?? '#5B3FD6', dayMode: true, pkgMode: false, toPkg: () => {}, toDay: () => {}, days: [], dayFull: 'ยังไม่เปิดให้จอง', months: [], allMonths: [], monthFull: '', pkgDates: [], pkgCount: 0, gridTitle: 'ยังไม่มีวันตลาดที่เปิดให้จอง', priceLabel: 'ค่าล็อก', priceVal: '[ราคา] บาท', calOpen: false, monOpen: false, listOpen: false, openList: () => {}, bookedList: [], noneBooked: true, listTypeHead: 'การจอง', bookedC: 0, bookedF: 0, openCal: () => {}, openMonths: () => {}, closeAll: () => {}, calTitle: '', calCells: [], lastOpen: '-', canPrev: false, noPrev: true, canNext: false, noNext: true, calPrev: () => {}, calNext: () => {}, zoneC: [], zoneF: [], mapCells: [], sel: '', selZone: '', hasSel: false, noSel: true, freeC: 0, freeF: 0, freeCount: 0, bookedCount: 0, totalAll: TOTAL, totalC: idsC.length, totalF: idsF.length, justBooked: '', hasJust: false, hasErr: false, errMsg: '', loggedIn: !!AIM.user(), guest: !AIM.user(), showLogin: false, askLogin: () => {}, closeLogin: () => {}, confirm: () => {} };
+    }
+    const month = MONTHS.find((m) => m.key === st.month) || MONTHS[0];
+    const dayKey = st.day;
     const dObj = marketDays.find((x) => x.key === dayKey) || marketDays[0];
-    const shortLabel = (x) => WS[x.wd] + ' ' + x.d + ' ' + MS[x.m];
-    const fullLabel = (x) => WF[x.wd] + ' ' + x.d + ' ' + MS[x.m] + ' ' + (x.y + 543);
-    const pkgKey = 'pkg-' + month.key;
-    const pkgTaken = () => { const set = month.taken.slice(); (mineAll[pkgKey] || []).forEach((id) => { if (set.indexOf(id) === -1) set.push(id); }); month.dates.forEach((d) => (mineAll[d.key] || []).forEach((id) => { if (set.indexOf(id) === -1) set.push(id); })); return set; };
-    const selKey = pkg ? pkgKey : dObj.key;
-    const booked = pkg ? pkgTaken() : bookedOnDate(dObj.key);
+    const shortLabel = (x) => AIM.WS[x.wd] + ' ' + x.d + ' ' + MS[x.m];
+    const fullLabel = (x) => AIM.WF[x.wd] + ' ' + x.d + ' ' + MS[x.m] + ' ' + (x.y + 543);
+    const unavailOn = (key) => AIM.unavailableOn(key);
+    const freeOn = (key) => { const u = unavailOn(key); return ALL.filter((id) => u.indexOf(id) === -1).length; };
+    // แพ็กเกจรายเดือน: ล็อกที่ว่างครบทุกวันตลาดที่เหลือในเดือน
+    const pkgTaken = (mo) => { const set = []; mo.dates.forEach((x) => unavailOn(x.key).forEach((id) => { if (set.indexOf(id) === -1) set.push(id); })); return set; };
+    const selKey = pkg ? 'pkg-' + month.key : dObj.key;
+    const booked = pkg ? pkgTaken(month) : unavailOn(dObj.key);
     const isFree = (id) => booked.indexOf(id) === -1;
     const selMap = st.selMap || {};
-    let sel = selMap[selKey] === undefined ? (isFree('C05') ? 'C05' : '') : selMap[selKey];
-    if (sel && !isFree(sel)) sel = '';
+    let sel = selMap[selKey] || '';
+    if (sel && (!isFree(sel) || ALL.indexOf(sel) === -1)) sel = '';
     let freeC = 0, freeF = 0;
-    const setSel = (id) => { const m = Object.assign({}, selMap); m[selKey] = id; this.setState({ selMap: m }); };
+    const setSel = (id) => { const m = Object.assign({}, selMap); m[selKey] = id; this.setState({ selMap: m, err: '' }); };
     const mk = (id) => {
       const isBooked = !isFree(id), isSel = id === sel;
       if (!isBooked) { if (id.charAt(0) === 'C') freeC += 1; else freeF += 1; }
-      return { id: id, bl: pkg ? 'ไม่ว่างบางวัน' : 'จองแล้ว', booked: isBooked, selected: isSel && !isBooked, available: !isBooked && !isSel, pick: () => setSel(id) };
+      return { id: id, bl: pkg ? 'ไม่ว่างบางวัน' : (AIM.shut().indexOf(id) !== -1 ? 'ปิดซ่อม' : 'จองแล้ว'), booked: isBooked, selected: isSel && !isBooked, available: !isBooked && !isSel, pick: () => setSel(id) };
     };
-    const zoneC = []; for (let i = 1; i <= 16; i++) zoneC.push(mk('C' + pad(i)));
-    const zoneF = []; for (let i = 1; i <= 8; i++) zoneF.push(mk('F' + pad(i)));
-    // chips: next 3 market days, plus the chosen one if it's further out
+    const zoneC = idsC.map(mk), zoneF = idsF.map(mk);
     const chipDays = marketDays.slice(0, 3);
     if (!chipDays.some((x) => x.key === dObj.key)) chipDays.push(dObj);
-    const days = chipDays.map((x) => ({ label: shortLabel(x), free: freeOn(x.key), on: x.key === dObj.key, off: x.key !== dObj.key, pick: () => this.setState({ day: x.key, justBooked: '' }) }));
+    const days = chipDays.map((x) => ({ label: shortLabel(x), free: freeOn(x.key), on: x.key === dObj.key, off: x.key !== dObj.key, pick: () => this.setState({ day: x.key, err: '' }) }));
     const monthChips = MONTHS.slice(0, 2);
     if (!monthChips.some((m) => m.key === month.key)) monthChips.push(month);
-    // calendar
-    const calIdx = Math.max(0, Math.min(MONTHS.length - 1, st.calIdx === undefined ? MONTHS.findIndex((m) => m.key === dObj.key.slice(0, 7)) : st.calIdx));
+    // ปฏิทิน
+    const calIdxDefault = Math.max(0, MONTHS.findIndex((m) => m.key === dObj.key.slice(0, 7)));
+    const calIdx = Math.max(0, Math.min(MONTHS.length - 1, st.calIdx === undefined ? calIdxDefault : st.calIdx));
     const cm = MONTHS[calIdx];
-    const firstWd = new Date(cm.y, cm.m, 1).getDay();
-    const lead = (firstWd + 6) % 7;
+    const lead = (new Date(cm.y, cm.m, 1).getDay() + 6) % 7;
     const dim = new Date(cm.y, cm.m + 1, 0).getDate();
     const calCells = [];
     for (let i = 0; i < lead; i++) calCells.push({ blank: true });
-    for (let d = 1; d <= dim; d++) {
-      const key = iso(cm.y, cm.m, d), wd = new Date(cm.y, cm.m, d).getDay(), isMarket = wd === 0 || wd === 6;
+    for (let n = 1; n <= dim; n++) {
+      const key = AIM.iso(cm.y, cm.m, n), wd = new Date(cm.y, cm.m, n).getDay(), isMarket = wd === 0 || wd === 6;
       const isPast = key <= TODAY;
       const free = isMarket && !isPast ? freeOn(key) : 0;
       const chosen = key === dObj.key;
-      calCells.push({ d: d, free: free, plain: !isMarket, past: isMarket && isPast, full: isMarket && !isPast && free === 0, market: isMarket && !isPast && free > 0 && !chosen, chosen: isMarket && !isPast && free > 0 && chosen, pick: () => this.setState({ day: key, calOpen: false, justBooked: '' }) });
+      calCells.push({ d: n, free: free, plain: !isMarket, past: isMarket && isPast, full: isMarket && !isPast && free === 0, market: isMarket && !isPast && free > 0 && !chosen, chosen: isMarket && !isPast && free > 0 && chosen, pick: () => this.setState({ day: key, calOpen: false, err: '' }) });
     }
-    const CATS = ['อาหารและเครื่องดื่ม', 'เสื้อผ้าและแฟชั่น', 'ผักผลไม้', 'ของใช้ทั่วไป', 'ขนมและของหวาน'];
-    const myOn = pkg ? (mineAll[pkgKey] || []) : (mineAll[dObj.key] || []).concat(pkgMineFor(dObj.key));
-    const monthOf = pkg ? month : (MONTHS.find((m) => m.key === dObj.key.slice(0, 7)) || month);
-    const bookedList = booked.slice().sort().map((id) => {
-      const isC = id.charAt(0) === 'C';
-      const isMine = myOn.indexOf(id) !== -1;
-      let nDays = 0; if (pkg) month.dates.forEach((d) => { if (bookedOnDate(d.key).indexOf(id) !== -1) nDays += 1; });
-      const monthly = !pkg && !isMine && holdersOf(monthOf.key).indexOf(id) !== -1;
-      return { id: id, zone: isC ? 'โซน C' : 'โซน F', cat: isMine ? 'ร้านของคุณ' : CATS[hash(id + (pkg ? pkgKey : dObj.key)) % CATS.length],
-        chipBg: isC ? '#EDE8FF' : '#FFEBDD', chipFg: isC ? '#4A31C4' : '#A2430C',
-        mine: isMine, partial: pkg && !isMine, days: 'ไม่ว่าง ' + Math.max(1, nDays) + '/' + month.dates.length + ' วัน',
-        monthly: monthly, daily: !pkg && !isMine && !monthly };
+    // รายการล็อกที่จองแล้วจริง (จากข้อมูลการจอง)
+    const me = AIM.user();
+    const datesInScope = pkg ? month.dates.map((x) => x.key) : [dObj.key];
+    const rows = {};
+    AIM.bookings().forEach((b) => {
+      if (['pending', 'review', 'paid'].indexOf(b.status) === -1) return;
+      const hit = b.dates.filter((k) => datesInScope.indexOf(k) !== -1);
+      if (!hit.length) return;
+      const r = rows[b.stall] || (rows[b.stall] = { days: 0, mine: false, monthly: false, type: '' });
+      r.days = Math.max(r.days, hit.length);
+      if (me && b.userId === me.id) r.mine = true;
+      if (b.mode === 'pkg') r.monthly = true;
+      const ow = AIM.userById(b.userId); if (ow && ow.type) r.type = ow.type;
     });
-    const loggedIn = !!st.loggedIn;
+    const bookedList = Object.keys(rows).sort().map((id) => {
+      const r = rows[id], isC = id.charAt(0) === 'C';
+      return { id: id, zone: AIM.zoneOfStall(id), cat: r.mine ? 'ร้านของคุณ' : (r.type || '-'), chipBg: isC ? '#EDE8FF' : '#FFEBDD', chipFg: isC ? '#4A31C4' : '#A2430C',
+        mine: r.mine, partial: pkg && !r.mine, days: 'ไม่ว่าง ' + r.days + '/' + month.dates.length + ' วัน', monthly: !pkg && !r.mine && r.monthly, daily: !pkg && !r.mine && !r.monthly };
+    });
+    const lastDay = MONTHS[MONTHS.length - 1];
+    const lastOpen = AIM.dateLabel(lastDay.dates[lastDay.dates.length - 1].key);
+    const loggedIn = !!me;
     return {
       accent: this.props.accent ?? '#5B3FD6',
       dayMode: !pkg, pkgMode: pkg,
-      toPkg: () => this.setState({ mode: 'pkg', justBooked: '' }), toDay: () => this.setState({ mode: 'day', justBooked: '' }),
+      toPkg: () => this.setState({ mode: 'pkg', err: '' }), toDay: () => this.setState({ mode: 'day', err: '' }),
       days: days, dayFull: pkg ? 'แพ็กเกจ ' + month.label + ' · ' + month.dates.length + ' วันตลาด' : fullLabel(dObj),
-      months: monthChips.map((m) => ({ label: m.label, count: m.dates.length, on: m.key === month.key, off: m.key !== month.key, pick: () => this.setState({ month: m.key, justBooked: '' }) })),
-      allMonths: MONTHS.map((m) => { const t = m.key === month.key ? pkgTaken() : m.taken; return { full: m.full, count: m.dates.length, free: 24 - t.length, on: m.key === month.key, off: m.key !== month.key, pick: () => this.setState({ month: m.key, monOpen: false, justBooked: '' }) }; }),
-      monthFull: month.full, pkgDates: month.dates.map((x) => ({ label: WS[x.wd] + ' ' + x.d })), pkgCount: month.dates.length,
+      months: monthChips.map((m) => ({ label: m.label, count: m.dates.length, on: m.key === month.key, off: m.key !== month.key, pick: () => this.setState({ month: m.key, err: '' }) })),
+      allMonths: MONTHS.map((m) => ({ full: m.full, count: m.dates.length, free: ALL.length - pkgTaken(m).length, on: m.key === month.key, off: m.key !== month.key, pick: () => this.setState({ month: m.key, monOpen: false, err: '' }) })),
+      monthFull: month.full, pkgDates: month.dates.map((x) => ({ label: AIM.WS[x.wd] + ' ' + x.d })), pkgCount: month.dates.length,
       gridTitle: pkg ? 'เลือกล็อกที่ว่างครบทั้งเดือน' : 'แตะล็อกสีเขียวเพื่อเลือก',
       priceLabel: pkg ? 'แพ็กเกจรายเดือน (' + month.dates.length + ' วัน)' : 'ค่าล็อก',
       priceVal: pkg ? '[ราคาแพ็กเกจ] บาท' : '[ราคา] บาท',
@@ -112,21 +102,22 @@ class Component extends DCLogic {
       canPrev: calIdx > 0, noPrev: calIdx === 0, canNext: calIdx < MONTHS.length - 1, noNext: calIdx === MONTHS.length - 1,
       calPrev: () => this.setState({ calIdx: calIdx - 1 }), calNext: () => this.setState({ calIdx: calIdx + 1 }),
       zoneC: zoneC, zoneF: zoneF,
-      sel: sel, selZone: sel.charAt(0) === 'C' ? 'โซน C' : 'โซน F',
+      mapCells: AIM.mapCells(zoneC.concat(zoneF).map((s) => ({ id: s.id, busy: s.booked, sub: s.booked ? s.bl : 'ว่าง', selected: s.selected })), 761, 376, 0),
+      sel: sel, selZone: sel ? AIM.zoneOfStall(sel) : '',
       hasSel: !!sel, noSel: !sel,
       freeC: freeC, freeF: freeF, freeCount: freeC + freeF, bookedCount: booked.length,
-      justBooked: st.justBooked || '', hasJust: !!st.justBooked,
+      totalAll: TOTAL, totalC: idsC.length, totalF: idsF.length,
+      justBooked: '', hasJust: false, hasErr: !!st.err, errMsg: st.err || '',
       loggedIn: loggedIn, guest: !loggedIn,
       showLogin: !!st.askLogin && !loggedIn,
       askLogin: () => this.setState({ askLogin: true }),
       closeLogin: () => this.setState({ askLogin: false }),
-      fakeLogin: () => this.setState({ loggedIn: true, askLogin: false }),
       confirm: () => {
         if (!sel) return;
-        if (!loggedIn) { this.setState({ askLogin: true }); return; }
-        const m = Object.assign({}, mineAll); m[selKey] = (mineAll[selKey] || []).concat([sel]);
-        const sm = Object.assign({}, selMap); sm[selKey] = '';
-        this.setState({ mine: m, selMap: sm, justBooked: sel + ' (' + (pkg ? 'แพ็กเกจ ' + month.label : shortLabel(dObj)) + ')' });
+        if (!AIM.user()) { this.setState({ askLogin: true }); return; }
+        const res = AIM.addBooking({ stall: sel, dates: datesInScope, mode: pkg ? 'pkg' : 'day' });
+        if (res.error) { this.setState({ err: res.error }); return; }
+        location.href = 'Checkout.dc.html';
       }
     };
   }

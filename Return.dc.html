@@ -2,6 +2,7 @@
 <html lang="th"><head>
 <meta charset="utf-8">
 <title>All IN Market — คืนล็อก</title>
+<script src="assets/js/store.js"></script>
 <script src="assets/js/dc-runtime.js"></script>
 </head>
 <body>
@@ -39,7 +40,7 @@
 </div>
 </section>
 <section style="flex-grow: 1; padding: 48px 80px 80px; display: flex; gap: 40px; align-items: flex-start">
-<sc-if value="{{notDone}}" hint-placeholder-val="{{true}}">
+<sc-if value="{{showEmpty}}" hint-placeholder-val="{{false}}"><div style="border-radius: 28px; border: 1px solid #DDD6F3; background: #F8F6FE; padding: 48px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center"><span style="font-size: 22px; font-weight: 700">ยังไม่มีการจองที่คืนได้</span><span style="font-size: 16px; color: #5A5768">เมื่อคุณจองล็อกแล้ว รายการที่ยังไม่ถึงวันขายจะแสดงที่นี่</span><a href="Booking.dc.html" style="height: 52px; padding: 0 28px; display: flex; align-items: center; border-radius: 999px; background: #4A3A96; color: #FFFFFF; font-weight: 700">ไปเลือกล็อก</a></div></sc-if><sc-if value="{{showMain}}" hint-placeholder-val="{{true}}">
 <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 36px">
 <div style="border-radius: 28px; border: 1px solid #DDD6F3; padding: 28px; display: flex; flex-direction: column; gap: 20px">
 <div style="display: flex; justify-content: space-between; align-items: center">
@@ -127,7 +128,7 @@
 </sc-if>
 </sc-for>
 </div>
-<label style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 15px; font-weight: 600">รายละเอียดเพิ่มเติม (ไม่บังคับ)</span><textarea rows="3" placeholder="เล่าให้ตลาดทราบเพิ่มเติมได้" style="box-sizing: border-box; border-radius: 14px; border: 1.5px solid #DDD6F3; padding: 14px 18px; font-family: inherit; font-size: 16px; color: #4A3A96; height: 104px; resize: vertical"></textarea></label>
+<label style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 15px; font-weight: 600">รายละเอียดเพิ่มเติม (ไม่บังคับ)</span><textarea id="ret-note" rows="3" placeholder="เล่าให้ตลาดทราบเพิ่มเติมได้" style="box-sizing: border-box; border-radius: 14px; border: 1.5px solid #DDD6F3; padding: 14px 18px; font-family: inherit; font-size: 16px; color: #4A3A96; height: 104px; resize: vertical"></textarea></label>
 </div>
 </div>
 <aside style="width: 420px; flex-shrink: 0; border-radius: 32px; background: #4A3A96; color: #FFFFFF; padding: 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
