@@ -10,7 +10,7 @@
   'use strict';
 
   // บัญชีเจ้าของตลาด (แก้ได้ที่นี่) - ใช้เข้าหน้าหลังบ้าน
-  var ADMIN = { username: 'admin', password: 'admin1234' };
+  var ADMIN = { username: 'allin.mk@gmail.com', password: '12345678' };
 
   var KEY = 'allin.v1';
   var MS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
@@ -191,7 +191,7 @@
   }
   function logout() { mutate(function (db) { db.session.userId = null; db.session.admin = false; }); }
   function adminLogin(u, p) {
-    if ((u || '').trim() !== ADMIN.username || p !== ADMIN.password) return { error: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' };
+    if ((u || '').trim().toLowerCase() !== ADMIN.username || p !== ADMIN.password) return { error: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' };
     mutate(function (db) { db.session.admin = true; db.session.userId = null; });
     return { ok: true };
   }
