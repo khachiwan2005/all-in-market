@@ -192,13 +192,13 @@
 
   // ---------- คำขอคืนล็อก ----------
   function refunds() { return load().refunds.slice(); }
-  function requestReturn(bookingId, reason, note) {
+  function requestReturn(bookingId, reason, note, bank) {
     return mutate(function (db) {
       var b = null; db.bookings.forEach(function (x) { if (x.id === bookingId) b = x; });
       if (!b) return { error: 'ไม่พบการจอง' };
       db.seq += 1;
       var firstDay = b.dates.slice().sort()[0];
-      var r = { id: 'r' + db.seq, bookingId: b.id, reason: reason, note: note || '', status: 'pending', createdAt: Date.now(), late: firstDay <= (function () { var t = new Date(); t.setDate(t.getDate() + 3); return iso(t.getFullYear(), t.getMonth(), t.getDate()); })() };
+      var r = { id: 'r' + db.seq, bookingId: b.id, reason: reason, note: note || '', bank: bank || null, status: 'pending', createdAt: Date.now(), late: firstDay <= (function () { var t = new Date(); t.setDate(t.getDate() + 3); return iso(t.getFullYear(), t.getMonth(), t.getDate()); })() };
       db.refunds.push(r); b.status = 'returned'; b.returnedAt = Date.now();
       return { refund: r };
     });

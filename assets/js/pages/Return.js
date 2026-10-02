@@ -41,12 +41,19 @@ class Component extends DCLogic {
       showMain: !done && mineLeft.length > 0, showEmpty: !done && mineLeft.length === 0,
       confirm: () => {
         if (!cur) return;
-        const note = ((document.getElementById('ret-note') || {}).value || '').trim();
-        const r = AIM.requestReturn(cur.bid, reason, note);
+        const val = (id) => ((document.getElementById(id) || {}).value || '').trim();
+        const note = val('ret-note'), accName = val('ret-acc-name'), bank = val('ret-bank'), accNo = val('ret-acc-no').replace(/[\s-]/g, '');
+        let err = '';
+        if (!accName) err = 'กรอกชื่อบัญชีที่ต้องการรับเงินคืน';
+        else if (!bank) err = 'เลือกธนาคาร';
+        else if (!/^[0-9]{10,15}$/.test(accNo)) err = 'เลขบัญชีต้องเป็นตัวเลข 10–15 หลัก';
+        if (err) { this.setState({ err: err }); return; }
+        const r = AIM.requestReturn(cur.bid, reason, note, { name: accName, bank: bank, no: accNo });
         if (r.error) return;
         this.setState({ done: true, lastId: cur.id, doneDate: cur.first, sel: '' });
       },
-      again: () => this.setState({ done: false, sel: '', lastId: '' })
+      accName: me.name + ' ' + me.surname, hasErr: !!st.err, errMsg: st.err || '',
+      again: () => this.setState({ done: false, sel: '', lastId: '', err: '' })
     };
   }
 }
