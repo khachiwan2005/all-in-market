@@ -17,6 +17,7 @@
   var MF = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
   var WS = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
   var WF = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+  var HOLD_MIN = 15; // กันล็อกไว้ให้ระหว่างชำระเงิน (นาที) ถ้าไม่ชำระ/ไม่แนบสลิปภายในเวลา ระบบคืนล็อกอัตโนมัติ
   var BLOCKING = ['pending', 'review', 'paid', 'returning']; // สถานะที่ถือว่าล็อกถูกจองอยู่
 
   function blank() {
@@ -39,9 +40,15 @@
   function load() {
     try {
       var raw = localStorage.getItem(KEY);
-      if (raw) { var d = JSON.parse(raw), b = blank(); for (var k in b) if (d[k] === undefined) d[k] = b[k]; return d; }
+      if (raw) { var d = JSON.parse(raw), b = blank(); for (var k in b) if (d[k] === undefined) d[k] = b[k]; if (expire(d)) save(d); return d; }
     } catch (e) { /* ใช้ค่าเริ่มต้น */ }
     return blank();
+  }
+  // การจองที่ยังไม่แนบสลิปเกิน HOLD_MIN นาที -> หมดเวลา (ล็อกกลับเป็นว่าง)
+  function expire(db) {
+    var now = Date.now(), ch = false;
+    db.bookings.forEach(function (b) { if (b.status === 'pending' && now - b.createdAt > HOLD_MIN * 60000) { b.status = 'expired'; b.expiredAt = now; ch = true; } });
+    return ch;
   }
   function save(db) { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { /* พื้นที่เต็ม/ถูกบล็อก */ } }
   function mutate(fn) { var db = load(); var r = fn(db); save(db); return r; }
@@ -133,9 +140,18 @@
     try { var q = new URLSearchParams(location.search).get('b'); if (q) id = q; } catch (e) { /* ignore */ }
     id = id || db.draft;
     var r = null; db.bookings.forEach(function (b) { if (b.id === id) r = b; });
+    if (r && r.status === 'expired') return null;
     var u = userOf(db);
     if (r && !db.session.admin && (!u || r.userId !== u.id)) return null;
     return r;
+  }
+
+  function draftExpired() {
+    var db = load(), id = null;
+    try { var q = new URLSearchParams(location.search).get('b'); if (q) id = q; } catch (e) { /* ignore */ }
+    id = id || db.draft;
+    var r = null; db.bookings.forEach(function (b) { if (b.id === id) r = b; });
+    return !!r && r.status === 'expired';
   }
 
   // ---------- ผู้ใช้ ----------
@@ -296,7 +312,7 @@
     dateLabel: dateLabel, dateShort: dateShort, dateFull: dateFull, datesText: datesText, extrasText: extrasText, parseKey: parseKey,
     zones: zones, stallsOfZone: stallsOfZone, allStalls: allStalls, zoneOfStall: zoneOfStall, shut: shut,
     bookings: bookings, takenOn: takenOn, unavailableOn: unavailableOn, freeCountOn: freeCountOn, bookingById: bookingById, userById: userById,
-    addBooking: addBooking, updateBooking: updateBooking, setDraft: setDraft, draftBooking: draftBooking,
+    addBooking: addBooking, updateBooking: updateBooking, setDraft: setDraft, draftBooking: draftBooking, draftExpired: draftExpired, HOLD_MIN: HOLD_MIN,
     user: user, register: register, pendingUser: pendingUser, verifyPending: verifyPending, login: login, logout: logout,
     adminLogin: adminLogin, isAdmin: isAdmin, setBanned: setBanned, resetPassword: resetPassword, users: function () { return load().users.slice(); },
     refunds: refunds, requestReturn: requestReturn, setRefundStatus: setRefundStatus,

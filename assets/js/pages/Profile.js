@@ -4,7 +4,7 @@ class Component extends DCLogic {
     const me = AIM.user();
     const tab = (this.state && this.state.tab) || 'all';
     const TODAY = AIM.todayKey();
-    const data = AIM.bookings().filter((b) => b.userId === me.id && b.status !== 'returned' && b.status !== 'rejected').sort((a, b) => b.createdAt - a.createdAt).map((b) => {
+    const data = AIM.bookings().filter((b) => b.userId === me.id && b.status !== 'returned' && b.status !== 'rejected' && b.status !== 'expired').sort((a, b) => b.createdAt - a.createdAt).map((b) => {
       const ds = b.dates.slice().sort(), last = ds[ds.length - 1];
       const done = b.status === 'paid' && last < TODAY;
       return { bid: b.id, id: b.stall, zone: AIM.zoneOfStall(b.stall), from: AIM.dateLabel(ds[0]), to: AIM.dateLabel(last), days: ds.length, code: b.code, extra: AIM.extrasText(b), total: AIM.money(AIM.priceOf(b).total),

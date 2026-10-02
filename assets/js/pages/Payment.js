@@ -36,7 +36,7 @@ class Component extends DCLogic {
       upload: () => { const el = document.getElementById('slip-file'); if (el) el.click(); },
       clear: () => { const el = document.getElementById('slip-file'); if (el) { el.value = ''; el.click(); } },
       picked: picked, submit: submit,
-      hint: !bk ? 'ยังไม่มีรายการจอง · กลับไปเลือกล็อกก่อน' : (st.err || 'แนบสลิปก่อนยืนยัน'),
+      hint: !bk ? (AIM.draftExpired() ? 'หมดเวลาชำระ ' + AIM.HOLD_MIN + ' นาที ระบบคืนล็อกอัตโนมัติแล้ว · กลับไปเลือกล็อกใหม่' : 'ยังไม่มีรายการจอง · กลับไปเลือกล็อกก่อน') : (st.err || 'แนบสลิปก่อนยืนยัน'),
       extraRows: extraRows,
       b: bk ? { stall: bk.stall, zone: AIM.zoneOfStall(bk.stall), datesText: AIM.datesText(bk), days: ds.length, stallPrice: AIM.money(pr.stall), total: AIM.money(pr.total) } : { stall: '-', zone: '', datesText: 'ยังไม่ได้เลือกล็อก', days: 0, stallPrice: '0', total: '0' }
     };
