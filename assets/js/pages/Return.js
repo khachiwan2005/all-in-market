@@ -52,7 +52,7 @@ class Component extends DCLogic {
         if (r.error) return;
         this.setState({ done: true, lastId: cur.id, doneDate: cur.first, sel: '' });
       },
-      accName: me.name + ' ' + me.surname, hasErr: !!st.err, errMsg: st.err || '',
+      accName: st.accName !== undefined ? st.accName : me.name + ' ' + me.surname, setAccName: (e) => this.setState({ accName: e.target.value }), hasErr: !!st.err, errMsg: st.err || '',
       again: () => this.setState({ done: false, sel: '', lastId: '', err: '' })
     };
   }

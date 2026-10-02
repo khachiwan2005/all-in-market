@@ -26,6 +26,7 @@
       users: [],
       bookings: [],
       refunds: [],
+      messages: [],
       layout: {
         zones: [
           { p: 'C', name: 'โซน C', last: 16, color: 'violet', desc: 'ล็อกในร่ม' },
@@ -234,6 +235,17 @@
     });
   }
 
+
+  // ---------- ข้อความจากผู้ใช้ถึงแอดมิน (ฟอร์ม "ติดต่อเรา") ----------
+  function addMessage(o) {
+    return mutate(function (db) {
+      db.seq += 1;
+      var m = { id: 'm' + db.seq, name: o.name, phone: (o.phone || '').replace(/[^0-9]/g, ''), topic: o.topic || '', code: o.code || '', text: o.text, status: 'new', createdAt: Date.now() };
+      db.messages.push(m); return { message: m };
+    });
+  }
+  function messages() { return load().messages.slice(); }
+  function setMessageStatus(id, st) { mutate(function (db) { db.messages.forEach(function (m) { if (m.id === id) m.status = st; }); }); }
   // ---------- ผังตลาด (แอดมิน) ----------
   function getLayout() { return load().layout; }
   function setLayout(patch) { mutate(function (db) { for (var k in patch) db.layout[k] = patch[k]; }); }
@@ -273,7 +285,8 @@
     var db = load();
     var p = db.bookings.filter(function (b) { return b.status === 'review'; }).length;
     var r = db.refunds.filter(function (x) { return x.status === 'pending'; }).length;
-    return { navPending: p, navRefunds: r, hasNavPending: p > 0, hasNavRefunds: r > 0 };
+    var g = (db.messages || []).filter(function (x) { return x.status === 'new'; }).length;
+    return { navPending: p, navRefunds: r, navMessages: g, hasNavPending: p > 0, hasNavRefunds: r > 0, hasNavMessages: g > 0 };
   }
   function requireAdmin() { if (!isAdmin()) { location.replace('AdminLogin.dc.html'); return false; } return true; }
   function requireUser() { if (!user()) { location.replace('Login.dc.html'); return false; } return true; }
@@ -315,7 +328,7 @@
     addBooking: addBooking, updateBooking: updateBooking, setDraft: setDraft, draftBooking: draftBooking, draftExpired: draftExpired, HOLD_MIN: HOLD_MIN,
     user: user, register: register, pendingUser: pendingUser, verifyPending: verifyPending, login: login, logout: logout,
     adminLogin: adminLogin, isAdmin: isAdmin, setBanned: setBanned, resetPassword: resetPassword, users: function () { return load().users.slice(); },
-    refunds: refunds, requestReturn: requestReturn, setRefundStatus: setRefundStatus,
+    refunds: refunds, addMessage: addMessage, messages: messages, setMessageStatus: setMessageStatus, requestReturn: requestReturn, setRefundStatus: setRefundStatus,
     getLayout: getLayout, setLayout: setLayout, adminNav: adminNav, mapCells: mapCells, PRICES: PRICES, money: money, priceOf: priceOf, requireAdmin: requireAdmin, requireUser: requireUser, resetAll: resetAll
   };
 })();
